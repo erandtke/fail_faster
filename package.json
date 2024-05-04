@@ -1,0 +1,7 @@
+{
+  "dependencies": {
+    "@octokit/core": "^6.1.2",
+    "getopts": "^2.3.0"
+  },
+  "type": "module"
+}
