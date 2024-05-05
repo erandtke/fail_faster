@@ -4,7 +4,7 @@
  */
 import { QrData, UriData} from "./types"
 
-export function generateURI(qr_data: QrData)
+export function generateURI(qr_data: any)
 {
   var payload = 
   {
@@ -15,9 +15,9 @@ export function generateURI(qr_data: QrData)
 
   var uri;
 
-  uri = qr_data.host + ":" + qr_data.port + "/";
+  uri = "http://" + qr_data.host + ":" + qr_data.port + "/";
   uri+= serializeUriData(qr_data.uri_data);
-
+  uri = encodeURI(uri);
 
   console.log("uri: " + uri)
 

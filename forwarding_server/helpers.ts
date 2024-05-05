@@ -20,16 +20,24 @@ export function debug_forwardToGithub(octokit: Octokit, payload: any)
 export function toPayload(owner: string, repo: string, title: string, body: string)
 {
   console.log('toPayload')
+  console.log('owner: ' + owner)
+  console.log('repo: ' + repo)
   var payload = 
   {
       owner: owner,
       repo: repo,
       title: title,
       body: body,
-      assignees: [],
+      assignees: [
+        'octocat'
+      ],
       milestone: 1,
-      labels: [],
-      headers: {}
+      labels: [
+        'bug'
+      ],
+      headers: {
+        'X-GitHub-Api-Version': '2022-11-28'
+      }
   };
 
   console.log('payload: ' + JSON.stringify(payload));
@@ -54,5 +62,5 @@ export function isJson(object: string)
 
 export function printHelp()
 {
-  console.log('usage: [--debug] --token public_access_token');
+  console.log('usage: [--debug] --git_public_access_token public_access_token --git_owner owner --git_repo repo');
 }

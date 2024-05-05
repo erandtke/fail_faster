@@ -18,11 +18,13 @@ export class InMemoryDatabase implements IAccountDatabase
 
   get(key: string): AccountInfo | undefined
   {
+    console.log("getting " + key + " to db");
     return this.database.get(key);
   }
 
   set(key: string, value: AccountInfo): void
   {
+    console.log("adding " + key + " to db");
     this.database.set(key, value);
   }
 }

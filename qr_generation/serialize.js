@@ -1,4 +1,4 @@
-export function generateURI(qr_data) {
+function generateURI(qr_data) {
     var payload = {
         a: qr_data.uri_data.account,
         e: qr_data.uri_data.error_code,
@@ -11,14 +11,16 @@ export function generateURI(qr_data) {
     console.log("uri: " + uri);
     return uri;
 }
-export function serializeUriData(uri_data) {
+
+function serializeUriData(uri_data) {
     return JSON.stringify({
         a: uri_data.account,
         e: uri_data.error_code,
         c: uri_data.context
     });
 }
-export function deserializeUriData(uri_string) {
+
+function deserializeUriData(uri_string) {
     var parsed_uri = JSON.parse(uri_string);
     var uri_data = {};
     uri_data.account = parsed_uri.a;

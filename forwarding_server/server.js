@@ -1,0 +1,62 @@
+import * as helpers from './helpers';
+import * as serialize from './serialize';
+import { InMemoryDatabase } from './database';
+import getopts from "getopts";
+import { Octokit } from "@octokit/core";
+import { createServer } from 'node:http';
+const hostname = '192.168.1.178';
+const port = 3000;
+// options
+const options = getopts(process.argv.slice(2), {
+    alias: {
+        debug: "d",
+        help: "h",
+        git_owner: "o",
+        git_personal_access_token: "t",
+        git_repo: "r"
+    }
+});
+if (options.h) {
+    helpers.printHelp();
+    process.exit();
+}
+console.log('options: ' + JSON.stringify(options));
+let db = new InMemoryDatabase();
+var demoAccountInfo = {};
+demoAccountInfo.owner = options.git_owner;
+demoAccountInfo.repo = options.git_repo;
+console.log('setting demo account');
+console.log(JSON.stringify(demoAccountInfo));
+db.set('demo', demoAccountInfo);
+// init
+var handleReq = options.debug ? helpers.debug_forwardToGithub : helpers.forwardToGithub;
+var publicAccessToken = options.git_personal_access_token;
+const octokit = new Octokit({ auth: publicAccessToken });
+const server = createServer((req, res) => {
+    console.log('did stuff');
+    res.statusCode = 200;
+    res.setHeader('Content-Type', 'text/plain');
+    console.log('decoding uri');
+    if (typeof req.url !== "string")
+        return;
+    var decodedURI = decodeURI(req.url).substring(1);
+    console.log('decoded uri, ' + decodedURI);
+    res.end('Hello World, req.method:' + req.method + ", req.url: " + decodedURI);
+    if (!helpers.isJson(decodedURI)) {
+        return;
+    }
+    console.log('parsing');
+    var uri_data = serialize.deserializeUriData(decodedURI);
+    console.log('getting db goodies account');
+    var accountInfo = db.get(uri_data.account);
+    if (accountInfo == undefined) {
+        console.log('undefined');
+        return;
+    }
+    console.log('account info good!');
+    var payload = helpers.toPayload(accountInfo.owner, accountInfo.repo, uri_data.error_code, uri_data.context);
+    handleReq(octokit, payload);
+});
+server.listen(port, hostname, () => {
+    console.log(`Server running at http://${hostname}:${port}/`);
+});

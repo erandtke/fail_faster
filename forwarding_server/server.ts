@@ -18,10 +18,9 @@ const options = getopts(process.argv.slice(2),
   alias:
   {
     debug: "d",
-    token: "t",
     help: "h",
     git_owner: "o",
-    git_public_access_token: "p",
+    git_public_access_token: "t",
     git_repo: "r"
   }
 })
@@ -32,18 +31,21 @@ if(options.h)
   process.exit();
 }
 
-let db: IAccountDatabase = new InMemoryDatabase();
-var demoAccountInfo = {} as AccountInfo;
-demoAccountInfo.owner = options.owner;
-demoAccountInfo.repo = options.repo;
-db.set('demo', demoAccountInfo);
-
 console.log('options: ' + JSON.stringify(options))
 
-// init
-var handleReq = options.d ? helpers.debug_forwardToGithub : helpers.forwardToGithub;
+let db: IAccountDatabase = new InMemoryDatabase();
+var demoAccountInfo = {} as AccountInfo;
+demoAccountInfo.owner = options.git_owner;
+demoAccountInfo.repo = options.git_repo;
+console.log('setting demo account')
+console.log(JSON.stringify(demoAccountInfo))
+db.set('demo', demoAccountInfo);
 
-var publicAccessToken = options.t;
+
+// init
+var handleReq = options.debug ? helpers.debug_forwardToGithub : helpers.forwardToGithub;
+
+var publicAccessToken = options.git_public_access_token;
 
 const octokit = new Octokit({auth: publicAccessToken});
 
@@ -66,15 +68,17 @@ const server = createServer((req, res) => {
   }
 
   console.log('parsing')
-  //var uri_data: UriData = serialize.deserializeUriData(decodedURI);
-  var uri_data = serialize.deserializeUriData("I'm gay!");
+  var uri_data: UriData = serialize.deserializeUriData(decodedURI);
   
+  console.log('getting db goodies account')
   var accountInfo = db.get(uri_data.account);
 
-  if(accountInfo == null)
+  if(accountInfo == undefined)
   {
+    console.log('undefined')
     return;
   }
+  console.log('account info good!')
 
   var payload = helpers.toPayload(accountInfo.owner, accountInfo.repo, uri_data.error_code, uri_data.context)
 
