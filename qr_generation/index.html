@@ -1,0 +1,79 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ko" lang="ko">
+<head>
+<title>Cross-Browser QRCode generator for Javascript</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no" />
+<script type="text/javascript" src="../thirdparty/qrcodejs/jquery.min.js"></script>
+<script type="text/javascript" src="../thirdparty/qrcodejs/qrcode.js"></script>
+<script type="text/javascript" src="serialize.js"></script>
+</head>
+<body>
+<input id="error_code_text" type="text" value="error code" style="width:80%" /><br />
+<input id="additional_context_text" type="text" value="additional context" style="width:80%" /><br />
+<div id="qrcode" style="width:100px; height:100px; margin-top:15px;"></div>
+
+
+<script type="text/javascript">
+var qrcode = new QRCode(document.getElementById("qrcode"), {
+	width : 100,
+	height : 100
+});
+
+const hostname = '192.168.1.178';
+const port = 3000;
+const account = "demo";
+
+function makeCode () {		
+	var ecText = document.getElementById("error_code_text");
+  var contextText = document.getElementById("additional_context_text");
+	
+	if (!ecText.value) {
+		alert("Input an error code");
+		ecText.focus();
+		return;
+	}
+
+  var uri_data =
+  {
+    account: account,
+    error_code: ecText.value,
+    context: contextText.value
+  }
+
+  var qr_data =
+  {
+    host: hostname,
+    port: port,
+    uri_data: uri_data
+  }
+
+  var uri = generateURI(qr_data);
+	
+	qrcode.makeCode(uri);
+}
+
+makeCode();
+
+$("#error_code_text").
+	on("blur", function () {
+		makeCode();
+	}).
+	on("keydown", function (e) {
+		if (e.keyCode == 13) {
+			makeCode();
+		}
+	});
+
+$("#additional_context_text").
+	on("blur", function () {
+		makeCode();
+	}).
+	on("keydown", function (e) {
+		if (e.keyCode == 13) {
+			makeCode();
+		}
+	});
+
+</script>
+</body>

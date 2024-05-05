@@ -3,5 +3,8 @@
     "@octokit/core": "^6.1.2",
     "getopts": "^2.3.0"
   },
-  "type": "module"
+  "type": "module",
+  "devDependencies": {
+    "typescript": "^5.4.5"
+  }
 }
