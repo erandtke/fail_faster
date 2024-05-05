@@ -1,14 +1,15 @@
 /**
- * @file helpers.js
+ * @file helpers.ts
  * helper functions for io details
  */
+import{ Octokit } from "@octokit/core";
 
-export function forwardToGithub(owner,payload)
+export function forwardToGithub(octokit: Octokit, payload: any)
 {
   octokit.request('POST /repos/{owner}/{repo}/issues', payload);
 }
 
-export function debug_forwardToGithub(owner,payload)
+export function debug_forwardToGithub(octokit: Octokit, payload: any)
 {
   console.log('debug')
   console.log('POST /repos/{owner}/{repo}/issues');
@@ -16,29 +17,27 @@ export function debug_forwardToGithub(owner,payload)
   console.log('content: ' + payload)
 }
 
-export function toPayload(owner,repo, title, body)
+export function toPayload(owner: string, repo: string, title: string, body: string)
 {
   console.log('toPayload')
-  var payload = {
+  var payload = 
+  {
       owner: owner,
       repo: repo,
       title: title,
       body: body,
       assignees: [],
       milestone: 1,
-      labels: [
-            'bug'
-      ],
-      headers: {
-            'X-GitHub-Api-Version': '2022-11-28'
-    }
+      labels: [],
+      headers: {}
   };
 
   console.log('payload: ' + JSON.stringify(payload));
+
   return payload;
 }
 
-export function isJson(object)
+export function isJson(object: string)
 {
   try
   {

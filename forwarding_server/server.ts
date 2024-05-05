@@ -1,4 +1,7 @@
-import * as helpers from './helpers.js'
+import * as helpers from './helpers'
+import * as serialize from './serialize'
+import { IAccountDatabase, InMemoryDatabase } from './database'
+import { AccountInfo, UriData } from './types'
 
 import getopts from "getopts"
 import{ Octokit } from "@octokit/core";
@@ -16,7 +19,10 @@ const options = getopts(process.argv.slice(2),
   {
     debug: "d",
     token: "t",
-    help: "h"
+    help: "h",
+    git_owner: "o",
+    git_public_access_token: "p",
+    git_repo: "r"
   }
 })
 
@@ -25,6 +31,12 @@ if(options.h)
   helpers.printHelp();
   process.exit();
 }
+
+let db: IAccountDatabase = new InMemoryDatabase();
+var demoAccountInfo = {} as AccountInfo;
+demoAccountInfo.owner = options.owner;
+demoAccountInfo.repo = options.repo;
+db.set('demo', demoAccountInfo);
 
 console.log('options: ' + JSON.stringify(options))
 
@@ -40,7 +52,11 @@ const server = createServer((req, res) => {
   res.statusCode = 200;
   res.setHeader('Content-Type', 'text/plain');
   console.log('decoding uri')
-  var decodedURI = decodeURI(req.url).substring(1);
+
+  if (typeof req.url !== "string")
+    return;
+
+  var decodedURI: string = decodeURI(req.url).substring(1);
   console.log('decoded uri, ' + decodedURI)
   res.end('Hello World, req.method:' + req.method + ", req.url: " + decodedURI);
  
@@ -50,15 +66,19 @@ const server = createServer((req, res) => {
   }
 
   console.log('parsing')
-  var parsed = JSON.parse(decodedURI)
+  //var uri_data: UriData = serialize.deserializeUriData(decodedURI);
+  var uri_data = serialize.deserializeUriData("I'm gay!");
+  
+  var accountInfo = db.get(uri_data.account);
 
-  console.log("parsed")
-  console.log("parsed owner: " + parsed.owner)
-  console.log("parsed repo: " + parsed.repo)
+  if(accountInfo == null)
+  {
+    return;
+  }
 
-  var payload = helpers.toPayload(parsed.owner, parsed.repo, parsed.title, parsed.body)
+  var payload = helpers.toPayload(accountInfo.owner, accountInfo.repo, uri_data.error_code, uri_data.context)
 
-  handleReq(payload)
+  handleReq(octokit, payload)
 });
 
 server.listen(port, hostname, () => {
