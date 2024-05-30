@@ -108,7 +108,8 @@
   },
   "files":
   [
-    "forwarding_server/database.ts",
+    "forwarding_server/idatabase.ts",
+    "forwarding_server/in_memory_database.ts",
     "forwarding_server/helpers.ts",
     "forwarding_server/serialize.ts",
     "forwarding_server/server.ts",

@@ -1,3 +1,6 @@
 [submodule "thirdparty/qrcodejs"]
 	path = thirdparty/qrcodejs
 	url = https://github.com/davidshimjs/qrcodejs.git
+[submodule "thirdparty/knex"]
+	path = thirdparty/knex
+	url = https://github.com/knex/knex.git

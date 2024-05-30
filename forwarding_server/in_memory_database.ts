@@ -1,15 +1,8 @@
 /**
- * @file  database.ts
- * interface for getting forwarding account info.
+ * @file  in_memory_database.ts
  */
-
+import { IAccountDatabase } from "./idatabase"
 import { AccountInfo} from "./types"
-
-export interface IAccountDatabase
-{
-  get(key: string): AccountInfo | undefined;
-  set(key: string, value: AccountInfo): void;
-}
 
 // pass through
 export class InMemoryDatabase implements IAccountDatabase

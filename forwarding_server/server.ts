@@ -1,6 +1,7 @@
 import * as helpers from './helpers'
 import * as serialize from './serialize'
-import { IAccountDatabase, InMemoryDatabase } from './database'
+import { IAccountDatabase } from './idatabase'
+import { InMemoryDatabase } from './in_memory_database'
 import { AccountInfo, UriData } from './types'
 
 import getopts from "getopts"

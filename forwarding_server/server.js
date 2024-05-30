@@ -1,6 +1,6 @@
 import * as helpers from './helpers';
 import * as serialize from './serialize';
-import { InMemoryDatabase } from './database';
+import { InMemoryDatabase } from './in_memory_database';
 import getopts from "getopts";
 import { Octokit } from "@octokit/core";
 import { createServer } from 'node:http';
@@ -12,7 +12,7 @@ const options = getopts(process.argv.slice(2), {
         debug: "d",
         help: "h",
         git_owner: "o",
-        git_personal_access_token: "t",
+        git_public_access_token: "t",
         git_repo: "r"
     }
 });
@@ -30,7 +30,7 @@ console.log(JSON.stringify(demoAccountInfo));
 db.set('demo', demoAccountInfo);
 // init
 var handleReq = options.debug ? helpers.debug_forwardToGithub : helpers.forwardToGithub;
-var publicAccessToken = options.git_personal_access_token;
+var publicAccessToken = options.git_public_access_token;
 const octokit = new Octokit({ auth: publicAccessToken });
 const server = createServer((req, res) => {
     console.log('did stuff');
