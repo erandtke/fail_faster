@@ -27,7 +27,7 @@ demoAccountInfo.owner = options.git_owner;
 demoAccountInfo.repo = options.git_repo;
 console.log('setting demo account');
 console.log(JSON.stringify(demoAccountInfo));
-db.set('demo', demoAccountInfo);
+db.create('demo', demoAccountInfo);
 // init
 var handleReq = options.debug ? helpers.debug_forwardToGithub : helpers.forwardToGithub;
 var publicAccessToken = options.git_public_access_token;
@@ -48,7 +48,7 @@ const server = createServer((req, res) => {
     console.log('parsing');
     var uri_data = serialize.deserializeUriData(decodedURI);
     console.log('getting db goodies account');
-    var accountInfo = db.get(uri_data.account);
+    var accountInfo = db.read(uri_data.account);
     if (accountInfo == undefined) {
         console.log('undefined');
         return;

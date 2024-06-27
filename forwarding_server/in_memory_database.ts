@@ -9,15 +9,29 @@ export class InMemoryDatabase implements IAccountDatabase
 {
   private database: Map<string, AccountInfo> = new Map<string, AccountInfo>();
 
-  get(key: string): AccountInfo | undefined
+  create(key: string, value: AccountInfo): void
+  {
+    this.database.set(key, value);
+  }
+
+  read(key: string): AccountInfo | undefined
   {
     console.log("getting " + key + " to db");
     return this.database.get(key);
   }
 
-  set(key: string, value: AccountInfo): void
+  update(key: string, value: AccountInfo): void
   {
-    console.log("adding " + key + " to db");
+    if(!this.database.has(key))
+      throw("No key " + key + ", bailing!")
+
     this.database.set(key, value);
+  }
+
+  delete(key: string): void
+  {
+    if(!this.database.has(key))
+      return;
+    this.database.delete(key);
   }
 }

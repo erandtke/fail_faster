@@ -40,7 +40,7 @@ demoAccountInfo.owner = options.git_owner;
 demoAccountInfo.repo = options.git_repo;
 console.log('setting demo account')
 console.log(JSON.stringify(demoAccountInfo))
-db.set('demo', demoAccountInfo);
+db.create('demo', demoAccountInfo);
 
 
 // init
@@ -72,7 +72,7 @@ const server = createServer((req, res) => {
   var uri_data: UriData = serialize.deserializeUriData(decodedURI);
   
   console.log('getting db goodies account')
-  var accountInfo = db.get(uri_data.account);
+  var accountInfo = db.read(uri_data.account);
 
   if(accountInfo == undefined)
   {

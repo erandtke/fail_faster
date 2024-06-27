@@ -7,8 +7,8 @@ import { AccountInfo} from "./types"
 
 export interface IAccountDatabase
 {
-  get(key: string): AccountInfo | undefined;
-  set(key: string, value: AccountInfo): void;
+  create(key: string, value: AccountInfo): void;
+  read(key: string): AccountInfo | undefined;
+  update(key: string, value: AccountInfo): void;
+  delete(key: string): void;
 }
-
-

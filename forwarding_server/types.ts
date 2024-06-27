@@ -21,4 +21,5 @@ export type AccountInfo =
 {
   owner: string;
   repo: string;
+  token: string;
 }
