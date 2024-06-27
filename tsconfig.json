@@ -113,6 +113,7 @@
     "forwarding_server/helpers.ts",
     "forwarding_server/serialize.ts",
     "forwarding_server/server.ts",
-    "forwarding_server/types.ts"
+    "forwarding_server/types.ts",
+    "forwarding_server/knexfile.ts"
   ]
 }

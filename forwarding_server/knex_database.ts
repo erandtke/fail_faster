@@ -2,62 +2,88 @@
  * @file  in_memory_database.ts
  */
 import { IAccountDatabase } from "./idatabase"
-import { AccountInfo} from "./types"
+import { AccountInfo } from "./types"
 
 import Knex from 'knex';
-import knexConfig from './knexfile;
+import knexDevelopmentConfig from './knexfile';
 
+const config = knexDevelopmentConfig;
 
 // pass through
 export class KnexDatabase implements IAccountDatabase
 {
-  constructor(config: knexConfig)
+  constructor()
   {
 
-    knex = Knex(config);
-    const exists = await knex.schema.hasTable(tableName);
-    if(!exists)
+    this.knex = Knex(config);
+    async function query(knex : any, tableName : string)
     {
-      await knex.schema.createTable(tablename, (table) =>
+      const exists = await knex.schema.hasTable(tableName);
+      if(exists)
       {
-        table.increments('id').primary();
-        table.string('account_name'); // key
-        table.string('owner');
-        table.string('repo');
-        table.string('token');
+        await knex.schema.createTable(tableName, (table : any) =>
+        {
+          table.increments('id').primary();
+          table.string('account_name'); // key
+          table.string('owner');
+          table.string('repo');
+          table.string('token');
+        });
       }
     }
+    query(this.knex, this.tableName);
   }
 
   create(key: string, value: AccountInfo): void
   {
-    await knex('accounts').insert(value);
+    async function query(knex : any, tableName : string)
+    {
+      await knex(tableName).insert(value);
+    }
+    query(this.knex, this.tableName);
   }
 
   read(key: string): AccountInfo | undefined
   {
-    const account = await knex(tableName).where({ account_name: key});
-    AccountInfo accountinfo;
+    async function query(knex : any, tableName : string)
+    {
+      const account = await knex(tableName).where({ account_name: key});
+      var accountInfo = {} as AccountInfo;
 
-    accountInfo.owner = account.owner;
-    accountInfo.repo = account.repo;
-    accountInfo.token = account.token;
+      accountInfo.owner = account.owner;
+      accountInfo.repo = account.repo;
+      accountInfo.token = account.token;
 
+      return accountInfo;
+    }
+
+    var accountInfo = {} as AccountInfo;
     return accountInfo;
   }
 
   update(key: string, value: AccountInfo): void
   {
-      let partialQuery = knex('accounts').where({ account_name: key });
-      await partialQuery.update({key, value.owner, value.repo, value.token});
+      var owner = value.owner;
+      var repo = value.repo;
+      var token = value.token;
+      async function query(knex : any, tableName : string)
+      {
+        let partialQuery = knex(tableName).where({ account_name: key });
+        await partialQuery.update({key, owner, repo, token});
+      }
+      query(this.knex, this.tableName);
   }
 
-  del(key: string): void
+  delete(key: string): void
   {
-      let partialQuery = knex('accounts').where({ account_name: key });
-      partialQuery.del();
+      async function query(knex : any) 
+      {
+        let partialQuery = knex('accounts').where({ account_name: key });
+        await partialQuery.del();
+      }
+      query(this.knex);
   }
 
-  private knex: Knex;
-  private const tableName: string = 'accounts';
+  private knex: Knex.Knex;
+  private tableName: string = 'accounts';
 }

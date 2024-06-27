@@ -1,10 +1,14 @@
-const knexDevelopmentConfig = {
+import { Knex } from 'knex';
+
+const knexDevelopmentConfig: Knex.Config =
+{
     client: 'sqlite3',
     connection: {
         filename: './dev.sqlite3'
     },
     useNullAsDefault: true
 };
+
 /*
   knexProductionConfig: Knex.Config =
   {

@@ -2,7 +2,7 @@
  * @file  in_memory_database.ts
  */
 import { IAccountDatabase } from "./idatabase"
-import { AccountInfo} from "./types"
+import { AccountInfo } from "./types"
 
 // pass through
 export class InMemoryDatabase implements IAccountDatabase

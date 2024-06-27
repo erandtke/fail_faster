@@ -2,6 +2,7 @@ import * as helpers from './helpers'
 import * as serialize from './serialize'
 import { IAccountDatabase } from './idatabase'
 import { InMemoryDatabase } from './in_memory_database'
+import { KnexDatabase } from './knex_database'
 import { AccountInfo, UriData } from './types'
 
 import getopts from "getopts"
